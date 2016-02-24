@@ -63,3 +63,30 @@ scores(player(jules,M1,P1), player(jean,M2,P2), player(gilles,M3,P3), player(joe
 	player(gilles, M3, P3), contrainteMenuisier(player(gilles, M3, P3), player(jules, M1, P1)),
 	player(ghislain, M5, P5), contrainteMenuisier(player(ghislain, M5, P5), player(jules, M1, P1)),
 	allDifferent([M1, M2, M3, M4, M5]) , allDifferent([P1, P2, P3, P4, P5]), contrainteGagnant([M1, P1], [M2, P2], [M3, P3], [M4, P4], [M5, P5]), !.
+
+	
+	
+	
+% Question 2
+
+treeA(X) :- X = t(73,t(31,t(5,nil,nil),nil),t(101,t(83,nil,t(97,nil,nil)),t(2016,nil,nil))).
+
+search(Info, t(Info, _Left, _Right)).
+search(Info, t(Root, Left, _Right)) :-
+	Info < Root,
+	search(Info, Left).
+search(Info, t(Root, _Left, Right)) :-
+	Root < Info,
+	search(Info, Right).
+	
+print_tree(Tree, State1, State2) :- var(State1), var(State2), print(Tree), !.
+print_tree(_, _, _).
+
+lca(_K1, _K2, nil, _State).
+lca(K1, K2, t(Root, Left, Right)) :- lca(K1, K2, t(Root, Left, Right), _State).
+lca(K1, K2, t(Root, Left, Right), State) :-
+	lca(K1, K2, Left, State1),
+	lca(K1, K2, Right, State2),
+	SubTree = t(Root, Left, Right), 
+	(search(K1, SubTree), search(K2, SubTree), print_tree(SubTree, State1, State2), State = 1, ! ; true).
+	
