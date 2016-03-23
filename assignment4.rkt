@@ -91,3 +91,40 @@
 
 
 ; Question 3
+(define (lca T v1 v2)
+  (if (and (validKey? T v1) (validKey? T v2))
+      (if (< v1 v2)
+          (lowestCommonAncestor T (cadr T) (caddr T) v1 v2)
+          (lowestCommonAncestor T (cadr T) (caddr T) v2 v1)
+      )
+      `()
+  )
+)
+
+(define (validKey? T v)
+  (if (empty? T)
+      #f
+      (if (= (car T) v)
+          #t
+          (if (< (car T) v)
+              (validKey? (caddr T) v)
+              (validKey? (cadr T) v)
+          )
+      )
+  )    
+)
+
+(define (lowestCommonAncestor T T1 T2 k1 k2)
+  (let ((r (car T)))
+    (if (and (empty? T1) (empty? T2))
+        `()
+        (if (and (>= r k1) (<= r k2))
+            T
+            (if (>= r k1)
+                (lowestCommonAncestor T1 (cadr T1) (caddr T1) k1 k2)
+                (lowestCommonAncestor T2 (cadr T2) (caddr T2) k1 k2)
+            )
+        )
+    )
+  )
+)
