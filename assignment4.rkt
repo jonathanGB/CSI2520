@@ -65,4 +65,29 @@
 
 
 ; Question 2
+(define (ourLog x precision)
+  (getLog x precision x 1 1)
+)
 
+(define (getLog x precision sum term count)
+  (let ((newSum (getSum x sum (+ term 1))))
+    (if (< (abs (- sum newSum)) precision)
+        (list newSum count)
+        (if (= term 1)
+            (getLog x precision newSum (+ term 1) (+ count 2))
+            (getLog x precision newSum (+ term 1) (+ count 1))
+        )
+    )
+  )
+)
+  
+(define (getSum x sum term)
+  (if (even? term)
+      (- sum (/ (expt x term) term))
+      (+ sum (/ (expt x term) term))
+  )
+)
+
+
+
+; Question 3
