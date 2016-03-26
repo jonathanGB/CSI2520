@@ -39,3 +39,23 @@ def showAllRestSum(minVal, maxVal):
 			allRestList.append((i, result))
 
 	return allRestList
+
+
+
+# Question 2
+fi = open('car_imperial.txt', 'rb')
+fo = open('car_metric.txt', 'wb')
+
+for row in fi:
+	cells = row.split(' ')
+	
+	cells[-1] = 'm^3'
+	cells[-3] = 'L/100km,'
+	cells[-2] = str(round(0.0283168466 * int(cells[-2]), 3))
+	cells[-4] = str(round(235.215 / int(cells[-4]), 1)) 
+
+	fo.write(' '.join(cells) + '\n')
+
+
+fi.close()
+fo.close()	
