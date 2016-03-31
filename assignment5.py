@@ -59,3 +59,39 @@ for row in fi:
 
 fi.close()
 fo.close()	
+
+
+
+# Question 3
+class House:
+	def __init__(self, chambres=[]):
+		self.rooms = ['kitchen', 'living', 'dinning', 'main'] + chambres
+		self.roomSizes = [-1 for _ in self.rooms]
+		self.nom = "House"
+	
+	def inputSqft(self):
+		for i, room in enumerate(self.rooms):
+			ftDim = raw_input(room + ' : width x length: ')
+			self.roomSizes[i] = self.transformMetric(ftDim)
+			
+	def transformMetric(self, ftDim):
+		ftToMRatio = 0.3048
+		
+		ftArr = ftDim.split('x')
+		width = round(float(ftArr[0]) * ftToMRatio, 2)
+		length = round(float(ftArr[1]) * ftToMRatio, 2)
+		
+		return str(width) + ' x ' + str(length) + ' m'
+		
+	def printMetric(self):
+		print self.nom
+		
+		for i, room in enumerate(self.rooms):
+			print room + ' : ' + self.roomSizes[i]
+			
+
+class Semi(House):
+	def __init__(self, chambres=[]):
+		House()
+		self.nom = 'Semi'
+	
