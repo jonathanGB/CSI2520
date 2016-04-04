@@ -1,7 +1,12 @@
-# RUNNING ON PYTHON 2.7.6
+#
+#
+# RUNNING ON PYTHON 2.7.6!
+#
+#
+
+
 
 # Question 1
-
 def cubeLess(X, B):
 	return B - X**3
 
