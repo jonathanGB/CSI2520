@@ -68,7 +68,7 @@ fo.close()
 
 
 # Question 3
-class House:
+class House(object):
 	def __init__(self, chambres=[]):
 		self.rooms = ['kitchen', 'living', 'dinning', 'main'] + chambres
 		self.roomSizes = [-1 for _ in self.rooms]
@@ -97,6 +97,6 @@ class House:
 
 class Semi(House):
 	def __init__(self, chambres=[]):
-		House()
+		super(Semi, self).__init__(chambres)
 		self.nom = 'Semi'
 	
