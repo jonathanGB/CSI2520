@@ -112,8 +112,22 @@ func main() {
     // fmt.Println()
     // h2.printMetric()
 
-    s1 := NewSemiRooms([]string{"bedroom1", "bedroom2"})
-    s1.inputSqft()
-    fmt.Println()
-    s1.printMetric()
+    // s1 := NewSemiRooms([]string{"bedroom1", "bedroom2"})
+    // s1.inputSqft()
+    // fmt.Println()
+    // s1.printMetric()
+
+    homes := []Home{
+      NewHouse(),
+      NewSemi(),
+      NewHouseRooms([]string{"bedroom1", "bedroom2"}),
+    }
+
+    for _, home := range homes {
+      home.inputSqft()
+    }
+
+    for _, home := range homes {
+      home.printMetric()
+    }
 }
