@@ -4,8 +4,14 @@ import (
     "fmt"
     "regexp"
     "strconv"
+    "time"
+    "os"
+    "runtime"
+    "bufio"
+    "sync"
 )
 
+/* Question 1 */
 type House struct {
     rooms []string
     name string
@@ -117,17 +123,122 @@ func main() {
     // fmt.Println()
     // s1.printMetric()
 
-    homes := []Home{
-      NewHouse(),
-      NewSemi(),
-      NewHouseRooms([]string{"bedroom1", "bedroom2"}),
+    // homes := []Home{
+    //   NewHouse(),
+    //   NewSemi(),
+    //   NewHouseRooms([]string{"bedroom1", "bedroom2"}),
+    // }
+    //
+    // for _, home := range homes {
+    //   home.inputSqft()
+    // }
+    //
+    // for _, home := range homes {
+    //   home.printMetric()
+    // }
+
+    main2()
+}
+
+
+
+/* Question 2 */
+func main2() {
+  src1, err := os.Open("input1.txt")
+  if err != nil {
+    return
+  }
+  defer src1.Close()
+  scan1 := bufio.NewScanner(src1)
+  scan1.Split(bufio.ScanWords)
+  chanStr1 := make(chan string)
+
+  src2, err := os.Open("input2.txt")
+  if err != nil {
+    return
+  }
+  defer src2.Close()
+  scan2 := bufio.NewScanner(src2)
+  scan2.Split(bufio.ScanWords)
+  chanStr2 := make(chan string)
+
+  out, err := os.Create("out.txt")
+  if err != nil {
+    return
+  }
+  defer out.Close()
+  chanOut := make(chan string, 100)
+
+  runtime.GOMAXPROCS(4)
+
+  ticker := time.NewTicker(time.Millisecond * 1000)
+
+  var waitingGroup sync.WaitGroup
+  waitingGroup.Add(1)
+
+  // read file 1
+  go func() {
+    for scan1.Scan() {
+      chanStr1 <- scan1.Text()
+      time.Sleep(time.Millisecond * 200)
     }
 
-    for _, home := range homes {
-      home.inputSqft()
+    close(chanStr1)
+  }()
+
+  // read file 2
+  go func() {
+    for scan2.Scan() {
+      chanStr2 <- scan2.Text()
+      time.Sleep(time.Millisecond * 300)
     }
 
-    for _, home := range homes {
-      home.printMetric()
+    close(chanStr2)
+  }()
+
+  go func() {
+    chanClosed := 0
+
+    for {
+      if chanClosed == 2 {
+        close(chanOut)
+        return
+      }
+
+      select {
+      case str1, ok := <- chanStr1:
+        fmt.Printf("%s ", str1)
+        chanOut <- str1 + " "
+
+        if !ok {
+          chanClosed++
+        }
+        // out.WriteString(str1 + " ")
+      case str2, ok := <- chanStr2:
+        fmt.Printf("%s ", str2)
+        chanOut <- str2 + " "
+
+        if !ok {
+          chanClosed++
+        }
+        // out.WriteString(str2 + " ")
+      case <- ticker.C:
+        fmt.Printf("\n")
+        chanOut <- "\n"
+        // out.WriteString("\n")
+      }
     }
+  }()
+
+  go func() {
+    defer waitingGroup.Done()
+
+    for elem := range chanOut {
+      out.WriteString(elem)
+    }
+  }()
+
+
+  waitingGroup.Wait()
+  ticker.Stop()
 }
